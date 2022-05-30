@@ -1,8 +1,9 @@
+import 'package:blinking_text/blinking_text.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class ListCard extends StatelessWidget {
-  final String balance;
+  final String? balance;
   final double width;
   final double height;
   final Color color;
@@ -16,25 +17,29 @@ class ListCard extends StatelessWidget {
   }) : super(key: key);
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return SizedBox(
       width: width,
       height: height,
       child: Card(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(13)),
         shadowColor: color,
-        color: Color.fromARGB(255, 255, 255, 255),
+        color: const Color.fromARGB(255, 255, 255, 255),
         child: Column(
           children: [
             Padding(
               padding: const EdgeInsets.only(left: 00.0),
               child: Text(
-                'My Balance',
-                style: GoogleFonts.inconsolata(fontSize: 18),
+                'My Balance is',
+                style: GoogleFonts.inconsolata(
+                    fontSize: 18, fontWeight: FontWeight.bold),
               ),
             ),
-            SizedBox(height: 10),
-            Text(
-              '₹$balance.0',
+            const SizedBox(height: 10),
+            BlinkText(
+              '₹$balance',
+              beginColor: const Color.fromARGB(255, 24, 218, 37),
+              endColor: const Color.fromARGB(255, 45, 75, 40),
+              duration: const Duration(seconds: 1),
               style: GoogleFonts.inconsolata(
                   fontSize: 35,
                   color: Colors.green,

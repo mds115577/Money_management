@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-
-int? month;
+import 'package:project_1_money_management/db/transaction_db.dart';
+import 'package:project_1_money_management/models/transactions_model.dart';
 
 class MonthChips extends StatefulWidget {
   const MonthChips({Key? key}) : super(key: key);
@@ -8,6 +8,8 @@ class MonthChips extends StatefulWidget {
   @override
   State<MonthChips> createState() => _MonthChipsState();
 }
+
+String? month;
 
 class _MonthChipsState extends State<MonthChips> {
   @override
@@ -26,7 +28,8 @@ class _MonthChipsState extends State<MonthChips> {
               ),
               onPressed: () {
                 setState(() {
-                  month = 1;
+                  month = 'Jan';
+                  sortedMonths(month!);
                 });
               },
               child: const Text('Jan')),
@@ -43,7 +46,8 @@ class _MonthChipsState extends State<MonthChips> {
               ),
               onPressed: () {
                 setState(() {
-                  month = 2;
+                  month = 'Feb';
+                  sortedMonths(month!);
                 });
               },
               child: const Text('Feb')),
@@ -60,7 +64,8 @@ class _MonthChipsState extends State<MonthChips> {
               ),
               onPressed: () {
                 setState(() {
-                  month = 3;
+                  month = 'Mar';
+                  sortedMonths(month!);
                 });
               },
               child: const Text('Mar')),
@@ -77,7 +82,8 @@ class _MonthChipsState extends State<MonthChips> {
               ),
               onPressed: () {
                 setState(() {
-                  month = 4;
+                  month = 'April';
+                  sortedMonths(month!);
                 });
               },
               child: const Text('April')),
@@ -94,7 +100,8 @@ class _MonthChipsState extends State<MonthChips> {
               ),
               onPressed: () {
                 setState(() {
-                  month = 5;
+                  month = 'May';
+                  sortedMonths(month!);
                 });
               },
               child: const Text('May')),
@@ -111,7 +118,8 @@ class _MonthChipsState extends State<MonthChips> {
               ),
               onPressed: () {
                 setState(() {
-                  month = 6;
+                  month = 'June';
+                  sortedMonths(month!);
                 });
               },
               child: const Text('June')),
@@ -128,7 +136,8 @@ class _MonthChipsState extends State<MonthChips> {
               ),
               onPressed: () {
                 setState(() {
-                  month = 7;
+                  month = 'July';
+                  sortedMonths(month!);
                 });
               },
               child: const Text('July')),
@@ -145,7 +154,8 @@ class _MonthChipsState extends State<MonthChips> {
               ),
               onPressed: () {
                 setState(() {
-                  month = 8;
+                  month = 'August';
+                  sortedMonths(month!);
                 });
               },
               child: const Text('August')),
@@ -162,7 +172,8 @@ class _MonthChipsState extends State<MonthChips> {
               ),
               onPressed: () {
                 setState(() {
-                  month = 9;
+                  month = 'Sept';
+                  sortedMonths(month!);
                 });
               },
               child: const Text('Sept')),
@@ -179,7 +190,8 @@ class _MonthChipsState extends State<MonthChips> {
               ),
               onPressed: () {
                 setState(() {
-                  month = 10;
+                  month = 'Oct';
+                  sortedMonths(month!);
                 });
               },
               child: const Text('Oct')),
@@ -196,7 +208,8 @@ class _MonthChipsState extends State<MonthChips> {
               ),
               onPressed: () {
                 setState(() {
-                  month = 11;
+                  month = 'Nov';
+                  sortedMonths(month!);
                 });
               },
               child: const Text('Nov')),
@@ -213,12 +226,32 @@ class _MonthChipsState extends State<MonthChips> {
               ),
               onPressed: () {
                 setState(() {
-                  month = 12;
+                  month = 'Dec';
+                  sortedMonths(month!);
                 });
               },
               child: const Text('Dec')),
         ],
       ),
     );
+  }
+
+  sortedMonths(String month) async {
+    TransactionDB.instance.filterListNotifier.value.clear();
+
+    for (TransactionModel item
+        in TransactionDB.instance.filterListNotifier.value) {
+      if (item.date.month == DateTime.january && month == 'Jan') {
+        setState(() {
+          TransactionDB.instance.filterListNotifier.value.add(item);
+          TransactionDB.instance.filterListNotifier.notifyListeners();
+        });
+      } else if (item.date.month == DateTime.may && month == 'May') {
+        setState(() {
+          TransactionDB.instance.filterListNotifier.value.add(item);
+          TransactionDB.instance.filterListNotifier.notifyListeners();
+        });
+      }
+    }
   }
 }
