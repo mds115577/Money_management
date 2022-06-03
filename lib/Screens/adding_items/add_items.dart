@@ -1,30 +1,65 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:project_1_money_management/Screens/Adding_items/Widgets/date_picker.dart';
+import 'package:project_1_money_management/refactors/bottom_bar.dart';
+import 'package:sizer/sizer.dart';
 import 'package:top_snackbar_flutter/custom_snack_bar.dart';
 import 'package:top_snackbar_flutter/top_snack_bar.dart';
 
+import '../../db/category_db.dart';
 import '../../db/transaction_db.dart';
+import '../../models/category_model.dart';
 import '../../models/transactions_model.dart';
 import '../Category/categories.dart';
-import 'Widgets/category.dart';
-import 'Widgets/radio.dart';
+import '../category/Widgets/category_radio_button.dart';
 
+ValueNotifier<bool> isIncome = ValueNotifier(true);
+CategoryType selectedType = CategoryType.income;
 final purposeTextEditingController = TextEditingController();
 final amountTextEditingController = TextEditingController();
+Object? categoryID;
+CategoryModel? selectedCategoryModel;
 
-class AddItems extends StatelessWidget {
+class AddItems extends StatefulWidget {
   const AddItems({Key? key}) : super(key: key);
 
   @override
+  State<AddItems> createState() => _AddItemsState();
+}
+
+class _AddItemsState extends State<AddItems> {
+  @override
+  void initState() {
+    CategoryDB().refreshUI();
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    double height, width;
+    height = MediaQuery.of(context).size.height;
+    width = MediaQuery.of(context).size.width;
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 35, 32, 32),
       body: SafeArea(
         child: ListView(
           children: [
+            Row(
+              children: [
+                IconButton(
+                    onPressed: () {
+                      Navigator.of(context).pushAndRemoveUntil(
+                          MaterialPageRoute(
+                              builder: (ctx) => ScreenNavigation()),
+                          (route) => false);
+                      TransactionDB.instance.refresh();
+                    },
+                    icon: const Icon(Icons.arrow_back, color: Colors.white)),
+              ],
+            ),
             Padding(
-              padding: const EdgeInsets.only(top: 40.0),
+              padding: const EdgeInsets.only(top: 10.0),
               child: Text(
                 'Add Transactions',
                 style: GoogleFonts.inconsolata(
@@ -47,7 +82,95 @@ class AddItems extends StatelessWidget {
                   padding: const EdgeInsets.only(top: 40.0, bottom: 40),
                   child: Column(
                     children: [
-                      const RadioButton(),
+                      ValueListenableBuilder(
+                        valueListenable: selectedCategory,
+                        builder: (BuildContext context,
+                            CategoryType newCategory, Widget? _) {
+                          return Column(
+                            children: <Widget>[
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Row(
+                                  children: [
+                                    Container(
+                                      width: width / 2.6,
+                                      decoration: BoxDecoration(
+                                          color: const Color.fromARGB(
+                                              255, 255, 255, 255),
+                                          borderRadius:
+                                              BorderRadius.circular(10)),
+                                      child: Row(
+                                        children: [
+                                          Radio<CategoryType>(
+                                            value: CategoryType.income,
+                                            groupValue: newCategory,
+                                            onChanged: (value) {
+                                              selectedCategory.value = value!;
+                                              // ignore: invalid_use_of_visible_for_testing_member, invalid_use_of_protected_member
+                                              selectedCategory
+                                                  .notifyListeners();
+                                              isIncome.value = true;
+                                              // ignore: invalid_use_of_visible_for_testing_member, invalid_use_of_protected_member
+                                              isIncome.notifyListeners();
+                                              categoryID = null;
+                                              newCategory = CategoryType.income;
+                                              selectedType = newCategory;
+                                              CategoryDB.instance.refreshUI();
+                                            },
+                                            activeColor: Colors.green,
+                                          ),
+                                          AutoSizeText(
+                                            'Income',
+                                            style: GoogleFonts.inconsolata(
+                                                fontSize: 20),
+                                          )
+                                        ],
+                                      ),
+                                    ),
+                                    const Spacer(),
+                                    Container(
+                                      width: width / 2.6,
+                                      decoration: BoxDecoration(
+                                          color: const Color.fromARGB(
+                                              255, 255, 255, 255),
+                                          borderRadius:
+                                              BorderRadius.circular(10)),
+                                      child: Row(
+                                        children: [
+                                          Radio<CategoryType>(
+                                            activeColor: Colors.green,
+                                            value: CategoryType.expense,
+                                            groupValue: newCategory,
+                                            onChanged: (value) {
+                                              selectedCategory.value = value!;
+                                              // ignore: invalid_use_of_visible_for_testing_member, invalid_use_of_protected_member
+                                              selectedCategory
+                                                  .notifyListeners();
+                                              isIncome.value = false;
+                                              // ignore: invalid_use_of_visible_for_testing_member, invalid_use_of_protected_member
+                                              isIncome.notifyListeners();
+                                              categoryID = null;
+                                              newCategory =
+                                                  CategoryType.expense;
+                                              selectedType = newCategory;
+                                              CategoryDB.instance.refreshUI();
+                                            },
+                                          ),
+                                          AutoSizeText(
+                                            'Expense',
+                                            style: GoogleFonts.inconsolata(
+                                                fontSize: 20),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          );
+                        },
+                      ),
                       const DatePick(),
                       const SizedBox(
                         height: 10,
@@ -59,26 +182,167 @@ class AddItems extends StatelessWidget {
                           padding: const EdgeInsets.only(left: 10.0, right: 10),
                           child: Row(
                             children: [
-                              const CategoryRefactor(),
-                              const Spacer(),
-                              ElevatedButton.icon(
-                                style: ElevatedButton.styleFrom(
-                                  primary: const Color.fromARGB(255, 255, 251,
-                                      253), //change background color of button
-                                  onPrimary: const Color.fromARGB(255, 2, 2,
-                                      2), //change text color of button
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(10),
-                                  ),
-                                  elevation: 0.0,
-                                ),
-                                onPressed: () {
-                                  showCategoryAddPop(context);
+                              ValueListenableBuilder(
+                                valueListenable: isIncome,
+                                builder:
+                                    (BuildContext context, bool isIncome, f) {
+                                  return isIncome
+                                      ? ValueListenableBuilder(
+                                          valueListenable:
+                                              CategoryDB().incomeCategoryList,
+                                          builder: (BuildContext context,
+                                              List<CategoryModel> newList, f) {
+                                            return Container(
+                                              width: width / 2.3,
+                                              height: 35,
+                                              decoration: BoxDecoration(
+                                                  color: Colors.white,
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          15)),
+                                              child: Padding(
+                                                padding: const EdgeInsets.only(
+                                                    left: 8.0),
+                                                child: DropdownButton(
+                                                  value: categoryID,
+                                                  focusColor:
+                                                      const Color.fromARGB(
+                                                          255, 0, 0, 0),
+
+                                                  //elevation: 5,
+                                                  style:
+                                                      GoogleFonts.inconsolata(
+                                                          color: const Color
+                                                                  .fromARGB(
+                                                              255, 0, 0, 0)),
+                                                  iconEnabledColor:
+                                                      Colors.black,
+                                                  items: newList.map((e) {
+                                                    return DropdownMenuItem<
+                                                        String>(
+                                                      onTap: () {
+                                                        selectedCategoryModel =
+                                                            e;
+                                                      },
+                                                      value: e.id,
+                                                      child: Text(
+                                                        e.name.toUpperCase(),
+                                                        style: GoogleFonts
+                                                            .inconsolata(
+                                                                color: Colors
+                                                                    .black),
+                                                      ),
+                                                    );
+                                                  }).toList(),
+                                                  hint: AutoSizeText(
+                                                    "Select Category",
+                                                    style: TextStyle(
+                                                        color: Colors.black,
+                                                        fontSize: 13.sp,
+                                                        fontWeight:
+                                                            FontWeight.w500),
+                                                  ),
+                                                  onChanged: (value) {
+                                                    setState(() {
+                                                      categoryID = value;
+                                                    });
+                                                  },
+                                                ),
+                                              ),
+                                            );
+                                          })
+                                      : ValueListenableBuilder(
+                                          valueListenable:
+                                              CategoryDB().expenseCategoryList,
+                                          builder: (BuildContext context,
+                                              List<CategoryModel> newList, f) {
+                                            return Container(
+                                              width: width / 2.3,
+                                              height: 35,
+                                              decoration: BoxDecoration(
+                                                  color: Colors.white,
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          15)),
+                                              child: Padding(
+                                                padding: const EdgeInsets.only(
+                                                    left: 8.0),
+                                                child: DropdownButton(
+                                                  value: categoryID,
+                                                  focusColor:
+                                                      const Color.fromARGB(
+                                                          255, 0, 0, 0),
+
+                                                  //elevation: 5,
+                                                  style:
+                                                      GoogleFonts.inconsolata(
+                                                          color: const Color
+                                                                  .fromARGB(
+                                                              255, 0, 0, 0)),
+                                                  iconEnabledColor:
+                                                      Colors.black,
+                                                  items: newList.map((e) {
+                                                    return DropdownMenuItem<
+                                                        String>(
+                                                      onTap: () {
+                                                        selectedCategoryModel =
+                                                            e;
+                                                      },
+                                                      value: e.id,
+                                                      child: Text(
+                                                        e.name.toUpperCase(),
+                                                        style: GoogleFonts
+                                                            .inconsolata(
+                                                                color: Colors
+                                                                    .black),
+                                                      ),
+                                                    );
+                                                  }).toList(),
+                                                  hint: AutoSizeText(
+                                                    "Select Category",
+                                                    style: TextStyle(
+                                                        color: Colors.black,
+                                                        fontSize: 13.sp,
+                                                        fontWeight:
+                                                            FontWeight.w500),
+                                                  ),
+                                                  onChanged: (value) {
+                                                    setState(
+                                                      () {
+                                                        categoryID = value;
+                                                      },
+                                                    );
+                                                  },
+                                                ),
+                                              ),
+                                            );
+                                          },
+                                        );
                                 },
-                                icon: const Icon(Icons.add),
-                                label: Text(
-                                  'Add Category',
-                                  style: GoogleFonts.inconsolata(),
+                              ),
+                              const Spacer(),
+                              SizedBox(
+                                width: width / 2.5,
+                                child: ElevatedButton.icon(
+                                  style: ElevatedButton.styleFrom(
+                                    primary: const Color.fromARGB(255, 255, 251,
+                                        253), //change background color of button
+                                    onPrimary: const Color.fromARGB(255, 2, 2,
+                                        2), //change text color of button
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
+                                    elevation: 0.0,
+                                  ),
+                                  onPressed: () {
+                                    showCategoryAddPop(context);
+                                  },
+                                  icon: const Icon(Icons.add),
+                                  label: AutoSizeText(
+                                    'Add Category',
+                                    style: GoogleFonts.inconsolata(
+                                        fontSize: 12.sp),
+                                  ),
                                 ),
                               ),
                             ],
@@ -89,7 +353,7 @@ class AddItems extends StatelessWidget {
                           Padding(
                             padding: const EdgeInsets.all(8.0),
                             child: TextFormField(
-                              maxLength: 7,
+                              maxLength: 10,
                               keyboardType: TextInputType.number,
                               controller: amountTextEditingController,
                               decoration: InputDecoration(
@@ -211,7 +475,9 @@ class AddItems extends StatelessWidget {
     await TransactionDB.instance.addTransaction(_model);
     purposeTextEditingController.clear();
     amountTextEditingController.clear();
-
+    Navigator.of(context).pushAndRemoveUntil(
+        MaterialPageRoute(builder: (ctx) => ScreenNavigation()),
+        (route) => false);
     TransactionDB.instance.refresh();
     showTopSnackBar(
       context,

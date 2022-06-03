@@ -1,5 +1,6 @@
 // ignore_for_file: invalid_use_of_protected_member
 
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:project_1_money_management/Screens/Category/Widgets/expense_category.dart';
@@ -70,8 +71,9 @@ class _AddCategory extends State<AddCategory>
                 showCategoryAddPop(context);
               },
               icon: const Icon(Icons.add),
-              label: Text(
+              label: AutoSizeText(
                 'Add Category',
+                maxLines: 2,
                 style: GoogleFonts.inconsolata(),
               ),
             ),
@@ -192,7 +194,7 @@ Future<void> showCategoryAddPop(BuildContext context) async {
                     showTopSnackBar(
                       context,
                       const CustomSnackBar.success(
-                        message: "Category Created Successfully",
+                        message: "Data Entered Succesfully",
                       ),
                     );
                   },

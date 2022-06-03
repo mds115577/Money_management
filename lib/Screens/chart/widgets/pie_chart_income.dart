@@ -1,77 +1,81 @@
 import 'package:google_fonts/google_fonts.dart';
 import 'package:project_1_money_management/db/transaction_db.dart';
 import 'package:project_1_money_management/models/transactions_model.dart';
+import 'package:sizer/sizer.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
 import 'package:flutter/material.dart';
 
-class Expansewidget extends StatefulWidget {
-  const Expansewidget({Key? key}) : super(key: key);
+class IncomeChart extends StatefulWidget {
+  const IncomeChart({Key? key}) : super(key: key);
 
   @override
-  State<Expansewidget> createState() => _ExpansewidgetState();
+  State<IncomeChart> createState() => _IncomeChartState();
 }
 
-class _ExpansewidgetState extends State<Expansewidget> {
-  late TooltipBehavior _tooltipBehavior;
-
-  @override
-  void initState() {
-    _tooltipBehavior = TooltipBehavior(enable: true);
-    super.initState();
-  }
-
+class _IncomeChartState extends State<IncomeChart> {
   @override
   Widget build(BuildContext context) {
-    final List<Chartdata> chartData =
-        chartlogic(TransactionDB.instance.incometransactionListNotifier.value);
+    setState(() {
+      TransactionDB.instance.refresh();
+    });
+
+    final List<Chartdata> newchart =
+        chartsort(TransactionDB.instance.incometransactionListNotifier.value);
     return Column(
       children: [
         const SizedBox(
-          height: 20,
+          height: 10,
         ),
         Container(
-          height: 280,
-          decoration: BoxDecoration(
-              color: const Color.fromARGB(255, 175, 171, 171),
-              borderRadius: BorderRadius.circular(10),
-              boxShadow: const [
-                BoxShadow(
-                  offset: Offset(
-                    1,
-                    2,
-                  ),
-                  blurRadius: 8,
-                  color: Color.fromARGB(255, 172, 167, 167),
-                )
-              ]),
-          child: SfCircularChart(
-              legend: Legend(isVisible: true),
-              title: ChartTitle(
-                  textStyle: GoogleFonts.inconsolata(
-                      color: Colors.white, fontSize: 20),
-                  text: 'Income Chart'),
-              series: <DoughnutSeries>[
-                // Render pie chart
-                DoughnutSeries<Chartdata, String>(
-                    dataLabelSettings: const DataLabelSettings(isVisible: true),
-                    dataSource: chartData,
-                    xValueMapper: (Chartdata data, _) => data.categories,
-                    yValueMapper: (Chartdata data, _) => data.amount)
-              ]),
-        ),
+            height: 33.h,
+            decoration: BoxDecoration(
+                color: const Color.fromARGB(255, 175, 171, 171),
+                borderRadius: BorderRadius.circular(10),
+                boxShadow: const [
+                  BoxShadow(
+                    offset: Offset(
+                      1,
+                      2,
+                    ),
+                    blurRadius: 8,
+                    color: Color.fromARGB(255, 172, 167, 167),
+                  )
+                ]),
+            child: ValueListenableBuilder(
+                valueListenable:
+                    TransactionDB.instance.incometransactionListNotifier,
+                builder: (BuildContext context, List<TransactionModel> list,
+                    Widget? _) {
+                  return SfCircularChart(
+                      legend: Legend(isVisible: true),
+                      title: ChartTitle(
+                          textStyle: GoogleFonts.inconsolata(
+                              color: Colors.white, fontSize: 20),
+                          text: 'Income Chart'),
+                      series: <DoughnutSeries>[
+                        // Render pie chart
+                        DoughnutSeries<Chartdata, String>(
+                            dataLabelSettings:
+                                const DataLabelSettings(isVisible: true),
+                            dataSource: newchart,
+                            xValueMapper: (Chartdata data, _) =>
+                                data.categories,
+                            yValueMapper: (Chartdata data, _) => data.amount)
+                      ]);
+                })),
       ],
     );
   }
 
-  List<Chartdata> chartlogic(List<TransactionModel> model) {
+  List<Chartdata> chartsort(List<TransactionModel> model) {
     double value;
     String catagoryname;
-    List visted = [];
-    List<Chartdata> thedata = [];
+    List visited = [];
+    List<Chartdata> newData = [];
 
     for (var i = 0; i < model.length; i++) {
-      visted.add(0);
+      visited.add(0);
     }
 
     for (var i = 0; i < model.length; i++) {
@@ -80,19 +84,19 @@ class _ExpansewidgetState extends State<Expansewidget> {
 
       for (var j = i + 1; j < model.length; j++) {
         if (model[i].category.name == model[j].category.name) {
-          value += model[j].amount;
-          visted[j] = -1;
+          value = value + model[j].amount;
+          visited[j] = -1;
         }
       }
 
-      if (visted[i] != -1) {
+      if (visited[i] != -1) {
         setState(() {
-          thedata.add(Chartdata(categories: catagoryname, amount: value));
+          newData.add(Chartdata(categories: catagoryname, amount: value));
         });
       }
     }
 
-    return thedata;
+    return newData;
   }
 }
 

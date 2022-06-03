@@ -19,6 +19,9 @@ class _ScreenSplashState extends State<ScreenSplash> {
 
   @override
   Widget build(BuildContext context) {
+    double height, width;
+    height = MediaQuery.of(context).size.height;
+    width = MediaQuery.of(context).size.width;
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 35, 32, 32),
       body: SafeArea(
@@ -26,14 +29,12 @@ class _ScreenSplashState extends State<ScreenSplash> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Center(
-              child: Expanded(
-                child: Container(
-                  height: 400,
-                  decoration: const BoxDecoration(
-                      image: DecorationImage(
-                    image: AssetImage('assets/images/logo.png'),
-                  )),
-                ),
+              child: Container(
+                height: height / 2,
+                decoration: const BoxDecoration(
+                    image: DecorationImage(
+                  image: AssetImage('assets/images/logo.png'),
+                )),
               ),
             ),
           ],
@@ -50,7 +51,7 @@ class _ScreenSplashState extends State<ScreenSplash> {
     } else {
       await Future.delayed(const Duration(seconds: 4));
       Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (ctx1) => const BottomBar()));
+          MaterialPageRoute(builder: (ctx1) => ScreenNavigation()));
     }
   }
 

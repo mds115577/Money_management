@@ -1,12 +1,11 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:project_1_money_management/Screens/Adding_items/Widgets/radio.dart';
+import 'package:project_1_money_management/Screens/Adding_items/add_items.dart';
 import 'package:project_1_money_management/db/category_db.dart';
+import 'package:sizer/sizer.dart';
 
 import '../../../models/category_model.dart';
-
-Object? categoryID;
-CategoryModel? selectedCategoryModel;
 
 class CategoryRefactor extends StatefulWidget {
   const CategoryRefactor({Key? key}) : super(key: key);
@@ -24,6 +23,9 @@ class _CategoryRefactorState extends State<CategoryRefactor> {
 
   @override
   Widget build(BuildContext context) {
+    double height, width;
+    height = MediaQuery.of(context).size.height;
+    width = MediaQuery.of(context).size.width;
     return ValueListenableBuilder(
       valueListenable: isIncome,
       builder: (BuildContext context, bool isIncome, f) {
@@ -33,7 +35,7 @@ class _CategoryRefactorState extends State<CategoryRefactor> {
                 builder:
                     (BuildContext context, List<CategoryModel> newList, f) {
                   return Container(
-                    width: 140,
+                    width: width / 2.3,
                     height: 35,
                     decoration: BoxDecoration(
                         color: Colors.white,
@@ -61,11 +63,11 @@ class _CategoryRefactorState extends State<CategoryRefactor> {
                             ),
                           );
                         }).toList(),
-                        hint: const Text(
+                        hint: AutoSizeText(
                           "Select Category",
                           style: TextStyle(
                               color: Colors.black,
-                              fontSize: 14,
+                              fontSize: 13.sp,
                               fontWeight: FontWeight.w500),
                         ),
                         onChanged: (value) {
@@ -82,7 +84,7 @@ class _CategoryRefactorState extends State<CategoryRefactor> {
                 builder:
                     (BuildContext context, List<CategoryModel> newList, f) {
                   return Container(
-                    width: 140,
+                    width: width / 2.3,
                     height: 35,
                     decoration: BoxDecoration(
                         color: Colors.white,
@@ -110,11 +112,11 @@ class _CategoryRefactorState extends State<CategoryRefactor> {
                             ),
                           );
                         }).toList(),
-                        hint: const Text(
+                        hint: AutoSizeText(
                           "Select Category",
                           style: TextStyle(
                               color: Colors.black,
-                              fontSize: 14,
+                              fontSize: 13.sp,
                               fontWeight: FontWeight.w500),
                         ),
                         onChanged: (value) {
@@ -133,43 +135,3 @@ class _CategoryRefactorState extends State<CategoryRefactor> {
     );
   }
 }
-// ValueListenableBuilder(
-//         valueListenable = CategoryDB().expenseCategoryList,
-//         builder = (BuildContext context, List<CategoryModel> newList, f) {
-//           return Container(
-//             width: 140,
-//             height: 35,
-//             decoration: BoxDecoration(
-//                 color: Colors.white, borderRadius: BorderRadius.circular(15)),
-//             child: Padding(
-//               padding: const EdgeInsets.only(left: 8.0),
-//               child: DropdownButton(
-//                 focusColor: const Color.fromARGB(255, 0, 0, 0),
-
-//                 //elevation: 5,
-//                 style: GoogleFonts.inconsolata(
-//                     color: const Color.fromARGB(255, 0, 0, 0)),
-//                 iconEnabledColor: Colors.black,
-//                 items: newList.map((e) {
-//                   return DropdownMenuItem<String>(
-//                     value: e.id,
-//                     child: Text(
-//                       e.name,
-//                       style: GoogleFonts.inconsolata(color: Colors.black),
-//                     ),
-//                   );
-//                 }).toList(),
-//                 hint: const Text(
-//                   "Select Category",
-//                   style: TextStyle(
-//                       color: Colors.black,
-//                       fontSize: 14,
-//                       fontWeight: FontWeight.w500),
-//                 ),
-//                 onChanged: (value) {
-//                   setState(() {});
-//                 },
-//               ),
-//             ),
-//           );
-//         });

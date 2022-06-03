@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:project_1_money_management/Refactors/splash_screen.dart';
 import 'package:project_1_money_management/models/category_model.dart';
+import 'package:sizer/sizer.dart';
 import 'models/transactions_model.dart';
 import 'package:timezone/data/latest.dart' as tz;
 
@@ -30,9 +31,14 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: ScreenSplash(),
+    return Sizer(
+      builder: (BuildContext context, Orientation orientation,
+          DeviceType deviceType) {
+        return const MaterialApp(
+          debugShowCheckedModeBanner: false,
+          home: ScreenSplash(),
+        );
+      },
     );
   }
 }

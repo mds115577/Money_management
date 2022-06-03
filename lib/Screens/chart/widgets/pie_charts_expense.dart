@@ -1,6 +1,7 @@
 import 'package:google_fonts/google_fonts.dart';
 import 'package:project_1_money_management/db/transaction_db.dart';
 import 'package:project_1_money_management/models/transactions_model.dart';
+import 'package:sizer/sizer.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
 import 'package:flutter/material.dart';
@@ -23,15 +24,15 @@ class _PieChartsExpenseState extends State<PieChartsExpense> {
 
   @override
   Widget build(BuildContext context) {
-    final List<Chartdata> chartData = chartlogic(
-        TransactionDB.instance.expennsetransactionListNotifier.value);
+    final List<Chartdata> newChart =
+        chartsort(TransactionDB.instance.expennsetransactionListNotifier.value);
     return Column(
       children: [
         const SizedBox(
           height: 20,
         ),
         Container(
-          height: 280,
+          height: 33.h,
           decoration: BoxDecoration(
               color: const Color.fromARGB(255, 175, 171, 171),
               borderRadius: BorderRadius.circular(10),
@@ -55,7 +56,7 @@ class _PieChartsExpenseState extends State<PieChartsExpense> {
                 // Render pie chart
                 DoughnutSeries<Chartdata, String>(
                     dataLabelSettings: const DataLabelSettings(isVisible: true),
-                    dataSource: chartData,
+                    dataSource: newChart,
                     xValueMapper: (Chartdata data, _) => data.categories,
                     yValueMapper: (Chartdata data, _) => data.amount)
               ]),
@@ -64,11 +65,11 @@ class _PieChartsExpenseState extends State<PieChartsExpense> {
     );
   }
 
-  List<Chartdata> chartlogic(List<TransactionModel> model) {
+  List<Chartdata> chartsort(List<TransactionModel> model) {
     double value;
     String catagoryname;
     List visted = [];
-    List<Chartdata> thedata = [];
+    List<Chartdata> newData = [];
 
     for (var i = 0; i < model.length; i++) {
       visted.add(0);
@@ -87,12 +88,12 @@ class _PieChartsExpenseState extends State<PieChartsExpense> {
 
       if (visted[i] != -1) {
         setState(() {
-          thedata.add(Chartdata(categories: catagoryname, amount: value));
+          newData.add(Chartdata(categories: catagoryname, amount: value));
         });
       }
     }
 
-    return thedata;
+    return newData;
   }
 }
 

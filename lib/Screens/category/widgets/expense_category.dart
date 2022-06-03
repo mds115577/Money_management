@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:project_1_money_management/db/category_db.dart';
+import 'package:top_snackbar_flutter/custom_snack_bar.dart';
+import 'package:top_snackbar_flutter/top_snack_bar.dart';
 
 import '../../../models/category_model.dart';
 
@@ -47,6 +49,12 @@ class ExpenseCategory extends StatelessWidget {
                           trailing: IconButton(
                               onPressed: () {
                                 CategoryDB.instance.deleteCategory(category.id);
+                                showTopSnackBar(
+                                  context,
+                                  const CustomSnackBar.error(
+                                    message: "Category Deleted Succesfully",
+                                  ),
+                                );
                               },
                               icon: const Icon(
                                 Icons.delete,

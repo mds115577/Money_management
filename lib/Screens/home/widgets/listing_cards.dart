@@ -1,4 +1,4 @@
-import 'package:blinking_text/blinking_text.dart';
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -35,13 +35,10 @@ class ListCard extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 10),
-            BlinkText(
+            AutoSizeText(
               '₹$balance',
-              beginColor: const Color.fromARGB(255, 24, 218, 37),
-              endColor: const Color.fromARGB(255, 45, 75, 40),
-              duration: const Duration(seconds: 1),
               style: GoogleFonts.inconsolata(
-                  fontSize: 35,
+                  fontSize: width / 11,
                   color: Colors.green,
                   fontWeight: FontWeight.w600),
             )

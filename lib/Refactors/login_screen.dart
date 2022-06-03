@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:project_1_money_management/Refactors/bottom_bar.dart';
+
 import 'package:shared_preferences/shared_preferences.dart';
 
 // ignore: must_be_immutable
@@ -13,14 +14,17 @@ class UserName extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    double height, width;
+    height = MediaQuery.of(context).size.height;
+    width = MediaQuery.of(context).size.width;
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 35, 32, 32),
       body: Padding(
         padding: const EdgeInsets.fromLTRB(10.0, 20.0, 10.0, 0),
         child: ListView(
           children: [
-            const SizedBox(
-              height: 80,
+            SizedBox(
+              height: height / 13,
             ),
             Center(
               child: Text(
@@ -52,7 +56,7 @@ class UserName extends StatelessWidget {
                           'What sould we call you ?',
                           style: GoogleFonts.inconsolata(
                               fontWeight: FontWeight.bold,
-                              fontSize: 25,
+                              fontSize: 20,
                               color: const Color.fromARGB(255, 0, 0, 0)),
                         ),
                       ],
@@ -128,6 +132,6 @@ class UserName extends StatelessWidget {
     final SharedPreferences pref = await SharedPreferences.getInstance();
     pref.setString('username', name);
     Navigator.of(context).pushReplacement(
-        MaterialPageRoute(builder: (context) => const BottomBar()));
+        MaterialPageRoute(builder: (context) => ScreenNavigation()));
   }
 }

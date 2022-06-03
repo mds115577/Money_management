@@ -8,17 +8,23 @@ import 'package:project_1_money_management/screens/chart/widgets/view_income.dar
 import '../../../models/transactions_model.dart';
 
 // ignore: must_be_immutable
-class IncomeTile extends StatelessWidget {
-  IncomeTile({Key? key}) : super(key: key);
+class IncomeTile extends StatefulWidget {
+  const IncomeTile({Key? key}) : super(key: key);
 
+  @override
+  State<IncomeTile> createState() => _IncomeTileState();
+}
+
+class _IncomeTileState extends State<IncomeTile> {
   String cdate = DateFormat("dd\nMMM").format(DateTime.now());
+
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
         Column(
           children: const [
-            Expansewidget(),
+            IncomeChart(),
           ],
         ),
         const SizedBox(height: 10),
@@ -41,7 +47,7 @@ class IncomeTile extends StatelessWidget {
                   style: ButtonStyle(
                       backgroundColor: MaterialStateProperty.all(Colors.white)),
                   onPressed: () {
-                    Navigator.of(context).push(MaterialPageRoute(
+                    Navigator.of(context).pushReplacement(MaterialPageRoute(
                         builder: (route) => const ViewAllIncome()));
                   },
                   label: Text(

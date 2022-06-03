@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:project_1_money_management/Screens/Home/home_screen.dart';
 import 'package:project_1_money_management/db/transaction_db.dart';
 import 'package:project_1_money_management/models/category_model.dart';
 import 'package:top_snackbar_flutter/custom_snack_bar.dart';
 import 'package:top_snackbar_flutter/top_snack_bar.dart';
 
-import '../Screens/Adding_items/Widgets/category.dart';
 import '../Screens/Adding_items/Widgets/date_picker.dart';
+import '../Screens/Adding_items/add_items.dart';
 import '../db/category_db.dart';
 import '../models/transactions_model.dart';
 
@@ -287,8 +286,6 @@ class _UpdateScreenState extends State<UpdateScreen> {
 
     await TransactionDB.instance.updateTransact(_update);
 
-    Navigator.of(context)
-        .push(MaterialPageRoute(builder: (route) => const ScreenHome()));
     showTopSnackBar(
       context,
       const CustomSnackBar.success(

@@ -1,5 +1,5 @@
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/foundation.dart';
+//import 'package:flutter/foundation.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:project_1_money_management/Screens/Adding_items/Widgets/date_picker.dart';
 
@@ -42,7 +42,7 @@ class TransactionDB implements TransactionDbFunctions {
   Future<void> refresh() async {
     final _alltransaction = await getAllTransactions();
     _alltransaction.sort((first, second) => second.date.compareTo(first.date));
-    filterListNotifier.value.clear();
+
     expennsetransactionListNotifier.value.clear();
     incometransactionListNotifier.value.clear();
     transactionListNotifier.value.clear();
@@ -56,7 +56,7 @@ class TransactionDB implements TransactionDbFunctions {
         }
       },
     );
-
+    filterListNotifier.notifyListeners();
     transactionListNotifier.value.addAll(_alltransaction);
     // ignore: invalid_use_of_visible_for_testing_member, invalid_use_of_protected_member
     transactionListNotifier.notifyListeners();
@@ -143,6 +143,7 @@ class TransactionDB implements TransactionDbFunctions {
           datas.category.type == CategoryType.income) {
         incomeFilterlist.value.add(datas);
         filterListNotifier.value.add(datas);
+        // ignore: invalid_use_of_visible_for_testing_member, invalid_use_of_protected_member
         incomeFilterlist.notifyListeners();
         // ignore: invalid_use_of_visible_for_testing_member, invalid_use_of_protected_member
         filterListNotifier.notifyListeners();
@@ -177,13 +178,4 @@ class TransactionDB implements TransactionDbFunctions {
       }
     }
   }
-
-  // sortedYear(String month) async {
-  //   filterListNotifier.value.clear();
-  //   for (TransactionModel item in transactionListNotifier.value) {
-  //     if (item.date.month == DateTime.january && month == 'Jan') {
-  //       filterListNotifier.value.add(item);
-  //     }
-  //   }
-  // }
 }
