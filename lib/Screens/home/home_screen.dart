@@ -38,24 +38,27 @@ class _ScreenHomeState extends State<ScreenHome> {
       body: SafeArea(
         child: Column(
           children: [
-            Row(
-              children: [
-                Text(
-                  ' Welcome',
-                  style: GoogleFonts.inconsolata(
-                    fontSize: 35,
-                    color: const Color.fromARGB(255, 190, 189, 189),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Row(
+                children: [
+                  Text(
+                    ' Welcome',
+                    style: GoogleFonts.inconsolata(
+                      fontSize: 35,
+                      color: const Color.fromARGB(255, 190, 189, 189),
+                    ),
                   ),
-                ),
-                const SizedBox(width: 9),
-                Text(
-                  '$usernameEntered,'.toUpperCase(),
-                  style: GoogleFonts.inconsolata(
-                      fontSize: 30.sp,
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold),
-                ),
-              ],
+                  const SizedBox(width: 9),
+                  Text(
+                    '$usernameEntered,'.toUpperCase(),
+                    style: GoogleFonts.inconsolata(
+                        fontSize: 30.sp,
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold),
+                  ),
+                ],
+              ),
             ),
             Padding(
               padding: const EdgeInsets.only(left: 0.0, right: 0),
@@ -134,6 +137,5 @@ class _ScreenHomeState extends State<ScreenHome> {
     if (totalBalance < 0) {
       totalBalance = 0;
     }
-    print(totalBalance);
   }
 }

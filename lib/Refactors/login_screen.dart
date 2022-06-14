@@ -53,7 +53,7 @@ class UserName extends StatelessWidget {
                     Row(
                       children: [
                         Text(
-                          'What sould we call you ?',
+                          'What should we call you ?',
                           style: GoogleFonts.inconsolata(
                               fontWeight: FontWeight.bold,
                               fontSize: 20,

@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:project_1_money_management/Refactors/splash_screen.dart';
 import 'package:project_1_money_management/models/category_model.dart';
+import 'package:project_1_money_management/refactors/bottom_bar.dart';
 import 'package:sizer/sizer.dart';
+import 'Refactors/splash_screen.dart';
 import 'models/transactions_model.dart';
 import 'package:timezone/data/latest.dart' as tz;
 

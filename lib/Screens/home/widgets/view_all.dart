@@ -5,7 +5,7 @@ import 'package:intl/intl.dart';
 import 'package:project_1_money_management/view/view_data.dart';
 import 'package:top_snackbar_flutter/custom_snack_bar.dart';
 import 'package:top_snackbar_flutter/top_snack_bar.dart';
-
+import 'package:project_1_money_management/refactors/bottom_bar.dart';
 import '../../../db/transaction_db.dart';
 import '../../../models/category_model.dart';
 import '../../../models/transactions_model.dart';
@@ -44,6 +44,19 @@ class _ViewAllState extends State<ViewAll> {
         backgroundColor: Colors.black,
         body: Column(
           children: [
+            Row(
+              children: [
+                IconButton(
+                    onPressed: () {
+                      Navigator.of(context).pushAndRemoveUntil(
+                          MaterialPageRoute(
+                              builder: (ctx) => ScreenNavigation()),
+                          (route) => false);
+                      TransactionDB.instance.refresh();
+                    },
+                    icon: const Icon(Icons.arrow_back, color: Colors.white)),
+              ],
+            ),
             Row(
               children: [
                 Padding(

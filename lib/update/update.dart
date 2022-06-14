@@ -46,8 +46,18 @@ class _UpdateScreenState extends State<UpdateScreen> {
       body: SafeArea(
         child: ListView(
           children: [
+            Row(
+              children: [
+                IconButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                      TransactionDB.instance.refresh();
+                    },
+                    icon: const Icon(Icons.arrow_back, color: Colors.white)),
+              ],
+            ),
             Padding(
-              padding: const EdgeInsets.only(top: 40.0),
+              padding: const EdgeInsets.only(top: 10.0, left: 10),
               child: Text(
                 'Edit Transactions',
                 style: GoogleFonts.inconsolata(

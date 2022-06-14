@@ -179,6 +179,56 @@ Future<void> showCategoryAddPop(BuildContext context) async {
                         ),
                       );
                     }
+                    // for (CategoryModel item
+                    //     in CategoryDB.instance.allCategoryList.value) {
+                    //   if (item.type == CategoryType.income) {
+                    //     for (CategoryModel item
+                    //         in CategoryDB.instance.incomeCategoryList.value) {
+                    //       if (name == item.name) {
+                    //         return showTopSnackBar(
+                    //           context,
+                    //           const CustomSnackBar.error(
+                    //             message: "This is already entered",
+                    //           ),
+                    //         );
+                    //       }
+                    //     }
+                    //   } else {
+                    //     for (CategoryModel item
+                    //         in CategoryDB.instance.expenseCategoryList.value) {
+                    //       if (name == item.name) {
+                    //         return showTopSnackBar(
+                    //           context,
+                    //           const CustomSnackBar.error(
+                    //             message: "This is already entered",
+                    //           ),
+                    //         );
+                    //       }
+                    //     }
+                    //   }
+                    // }
+                    for (CategoryModel item
+                        in CategoryDB.instance.incomeCategoryList.value) {
+                      if (name == item.name) {
+                        return showTopSnackBar(
+                          context,
+                          const CustomSnackBar.error(
+                            message: "This is already entered",
+                          ),
+                        );
+                      }
+                    }
+                    for (CategoryModel item
+                        in CategoryDB.instance.expenseCategoryList.value) {
+                      if (name == item.name && type == CategoryType.expense) {
+                        return showTopSnackBar(
+                          context,
+                          const CustomSnackBar.error(
+                            message: "This is already entered",
+                          ),
+                        );
+                      }
+                    }
 
                     final _category = CategoryModel(
                         id: DateTime.now().toString(), name: name, type: type);
@@ -189,7 +239,7 @@ Future<void> showCategoryAddPop(BuildContext context) async {
                     // ignore: invalid_use_of_visible_for_testing_member,
                     CategoryDB().incomeCategoryList.notifyListeners();
                     // ignore: invalid_use_of_visible_for_testing_member
-                    CategoryDB().allCategoryList.notifyListeners();
+                    //CategoryDB().allCategoryList.notifyListeners();
                     Navigator.of(ctx).pop();
                     showTopSnackBar(
                       context,

@@ -19,7 +19,7 @@ class CategoryDB implements CategoryDbFunctions {
   factory CategoryDB() {
     return instance;
   }
-  ValueNotifier<List<CategoryModel>> allCategoryList = ValueNotifier([]);
+  // ValueNotifier<List<CategoryModel>> allCategoryList = ValueNotifier([]);
   ValueNotifier<List<CategoryModel>> expenseCategoryList = ValueNotifier([]);
   ValueNotifier<List<CategoryModel>> incomeCategoryList = ValueNotifier([]);
   @override
@@ -37,7 +37,7 @@ class CategoryDB implements CategoryDbFunctions {
 
   Future<void> refreshUI() async {
     final _allcategories = await getCategories();
-    allCategoryList.value.clear();
+    // allCategoryList.value.clear();
     incomeCategoryList.value.clear();
     expenseCategoryList.value.clear();
     Future.forEach(
@@ -45,10 +45,10 @@ class CategoryDB implements CategoryDbFunctions {
       (CategoryModel category) {
         if (category.type == CategoryType.income) {
           incomeCategoryList.value.add(category);
-          allCategoryList.value.add(category);
+          //allCategoryList.value.add(category);
         } else {
           expenseCategoryList.value.add(category);
-          allCategoryList.value.add(category);
+          //allCategoryList.value.add(category);
         }
       },
     );
@@ -57,7 +57,7 @@ class CategoryDB implements CategoryDbFunctions {
     // ignore: invalid_use_of_visible_for_testing_member, invalid_use_of_protected_member
     expenseCategoryList.notifyListeners();
     // ignore: invalid_use_of_visible_for_testing_member, invalid_use_of_protected_member
-    allCategoryList.notifyListeners();
+    //  allCategoryList.notifyListeners();
   }
 
   @override

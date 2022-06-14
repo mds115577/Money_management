@@ -5,6 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:project_1_money_management/Screens/Settings/notification.dart';
 import 'package:project_1_money_management/db/category_db.dart';
 import 'package:project_1_money_management/db/transaction_db.dart';
+import 'package:project_1_money_management/refactors/bottom_bar.dart';
 import 'package:restart_app/restart_app.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:top_snackbar_flutter/custom_snack_bar.dart';
@@ -25,13 +26,8 @@ class _SettingsState extends State<Settings> {
   void initState() {
     super.initState();
     NotificationApi().init(initScheduled: true);
-    listenNotifications();
   }
 
-  void listenNotifications() =>
-      NotificationApi.onNotifications.listen(onClickedNotification);
-  onClickedNotification(String? payload) => Navigator.of(context)
-      .push(MaterialPageRoute(builder: (route) => const BottomAppBar()));
   @override
   Widget build(BuildContext context) {
     double height, width;
@@ -181,6 +177,27 @@ class _SettingsState extends State<Settings> {
                         borderRadius: BorderRadius.circular(10)),
                     height: height / 16,
                     child: ListTile(
+                      onTap: () {
+                        showDialog(
+                            context: context,
+                            builder: (BuildContext c) {
+                              return AlertDialog(
+                                title: const Text("About"),
+                                content: Text(
+                                    "This app was developed by Mr.MOHAMMED SHAHID using Flutter Framework ",
+                                    style: GoogleFonts.inconsolata(
+                                        fontSize: 20,
+                                        fontWeight: FontWeight.w600)),
+                                actions: [
+                                  TextButton(
+                                      onPressed: () {
+                                        Navigator.of(context).pop();
+                                      },
+                                      child: const Text('Go Back'))
+                                ],
+                              );
+                            });
+                      },
                       leading: Padding(
                         padding: const EdgeInsets.only(bottom: 18.0),
                         child: Text(
@@ -209,14 +226,6 @@ class _SettingsState extends State<Settings> {
                     ),
                   ),
                   const SizedBox(height: 18),
-                  // ElevatedButton(
-                  //     onPressed: () {
-                  //       NotificationApi.showNotification(
-                  //           body: 'come on man',
-                  //           payload: 'come on man',
-                  //           title: 'simple');
-                  //     },
-                  //     child: const Text('sdf'))
                 ],
               ),
             ),
@@ -247,6 +256,15 @@ class _SettingsState extends State<Settings> {
         message: "Notification is Setted Succesfully",
       ),
     );
+  }
+
+  void listenNotifications() {
+    NotificationApi.onNotifications.listen(onClickedNotification);
+  }
+
+  onClickedNotification(String? payload) {
+    Navigator.of(context)
+        .push(MaterialPageRoute(builder: (context) => ScreenNavigation()));
   }
 }
 

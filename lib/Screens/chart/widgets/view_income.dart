@@ -6,7 +6,6 @@ import 'package:project_1_money_management/refactors/bottom_bar.dart';
 import 'package:project_1_money_management/view/view_data.dart';
 import 'package:top_snackbar_flutter/custom_snack_bar.dart';
 import 'package:top_snackbar_flutter/top_snack_bar.dart';
-
 import '../../../db/transaction_db.dart';
 import '../../../models/category_model.dart';
 import '../../../models/transactions_model.dart';
