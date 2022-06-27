@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:get/get_navigation/src/root/get_material_app.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:project_1_money_management/models/category_model.dart';
 import 'package:project_1_money_management/refactors/bottom_bar.dart';
@@ -35,7 +36,7 @@ class MyApp extends StatelessWidget {
     return Sizer(
       builder: (BuildContext context, Orientation orientation,
           DeviceType deviceType) {
-        return const MaterialApp(
+        return const GetMaterialApp(
           debugShowCheckedModeBanner: false,
           home: ScreenSplash(),
         );

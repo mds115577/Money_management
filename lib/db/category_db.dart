@@ -18,7 +18,7 @@ class CategoryDB implements CategoryDbFunctions {
 
   factory CategoryDB() {
     return instance;
-  }
+  } 
   // ValueNotifier<List<CategoryModel>> allCategoryList = ValueNotifier([]);
   ValueNotifier<List<CategoryModel>> expenseCategoryList = ValueNotifier([]);
   ValueNotifier<List<CategoryModel>> incomeCategoryList = ValueNotifier([]);
@@ -28,8 +28,7 @@ class CategoryDB implements CategoryDbFunctions {
     await _categoryDB.put(value.id, value);
     refreshUI();
   }
-
-  @override
+ @override
   Future<List<CategoryModel>> getCategories() async {
     final _categoryDB = await Hive.openBox<CategoryModel>(CATEGORY_DB_NAME);
     return _categoryDB.values.toList();
