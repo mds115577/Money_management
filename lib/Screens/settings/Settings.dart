@@ -1,6 +1,7 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:project_1_money_management/Screens/Settings/notification.dart';
 import 'package:project_1_money_management/db/category_db.dart';
@@ -19,6 +20,8 @@ class Settings extends StatefulWidget {
 }
 
 class _SettingsState extends State<Settings> {
+  final CategoryController _catcont = Get.put(CategoryController());
+  final TransactionDbFunctions _cont = Get.put(TransactionDbFunctions());
   bool status = false;
   bool vals = false;
   static TimeOfDay initialTime = TimeOfDay.now();
@@ -266,12 +269,12 @@ class _SettingsState extends State<Settings> {
     Navigator.of(context)
         .push(MaterialPageRoute(builder: (context) => ScreenNavigation()));
   }
-}
 
-clrscr() async {
-  SharedPreferences preferences = await SharedPreferences.getInstance();
-  await preferences.clear();
-  await TransactionDB.instance.transClear();
-  await CategoryDB.instance.categoryClear();
-  Restart.restartApp();
+  clrscr() async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    await preferences.clear();
+    await _cont.transClear();
+    await _catcont.categoryClear();
+    Restart.restartApp();
+  }
 }

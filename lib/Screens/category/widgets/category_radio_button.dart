@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:project_1_money_management/Screens/Adding_items/Widgets/radio.dart';
 
 import '../../../models/category_model.dart';
 
@@ -37,11 +36,6 @@ class Category_Radio extends StatelessWidget {
             if (value == null) {
               return;
             } else {
-              isIncome.value == true
-                  ? isIncome.value = false
-                  : isIncome.value = true;
-              // ignore: invalid_use_of_visible_for_testing_member, invalid_use_of_protected_member
-              isIncome.notifyListeners();
               selectedCategory.value = value;
               // ignore: invalid_use_of_visible_for_testing_member, invalid_use_of_protected_member
               selectedCategory.notifyListeners();

@@ -1,33 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:project_1_money_management/Screens/Home/Widgets/income_expense.dart';
-import 'package:project_1_money_management/models/category_model.dart';
-import 'package:project_1_money_management/models/transactions_model.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:project_1_money_management/screens/home/controller/home_controller.dart';
 import 'package:sizer/sizer.dart';
 
 import '../../db/transaction_db.dart';
 import 'Widgets/listing_cards.dart';
 import 'Widgets/listtile.dart';
 
-class ScreenHome extends StatefulWidget {
-  const ScreenHome({Key? key}) : super(key: key);
+class ScreenHomes extends StatelessWidget {
+  ScreenHomes({Key? key}) : super(key: key);
+  final TransactionDbFunctions _cont = Get.put(TransactionDbFunctions());
+  final HomeController _homecont = Get.put(HomeController());
 
-  @override
-  State<ScreenHome> createState() => _ScreenHomeState();
-}
-
-class _ScreenHomeState extends State<ScreenHome> {
-  double totalBalance = 0;
-  double totalExpense = 0;
-  double totalIncome = 0;
-  @override
-  void initState() {
-    getName();
-    super.initState();
-  }
-
-  String? usernameEntered;
   @override
   Widget build(BuildContext context) {
     double height, width;
@@ -51,7 +37,7 @@ class _ScreenHomeState extends State<ScreenHome> {
                   ),
                   const SizedBox(width: 9),
                   Text(
-                    '$usernameEntered,'.toUpperCase(),
+                    '${_homecont.usernameEntered},'.toUpperCase(),
                     style: GoogleFonts.inconsolata(
                         fontSize: 30.sp,
                         color: Colors.white,
@@ -62,46 +48,41 @@ class _ScreenHomeState extends State<ScreenHome> {
             ),
             Padding(
               padding: const EdgeInsets.only(left: 0.0, right: 0),
-              child: ValueListenableBuilder(
-                  valueListenable:
-                      TransactionDB.instance.transactionListNotifier,
-                  builder: (BuildContext context, List<TransactionModel> listss,
-                      Widget? _) {
-                    totaldata(listss);
-                    return Column(
-                        // ignore: prefer_const_literals_to_create_immutables
-                        children: [
-                          ListCard(
-                            balance: '$totalBalance',
-                            height: height / 8,
-                            width: 90.w,
-                            color: Colors.white,
-                          ),
-                          const SizedBox(height: 10),
-                          Padding(
-                            padding:
-                                const EdgeInsets.only(left: 10.0, right: 10),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              // ignore: prefer_const_literals_to_create_immutables
-                              children: [
-                                Income_Expense(
-                                  label: 'Income',
-                                  amount: '$totalIncome',
-                                  color: Colors.green,
-                                  shadow: Colors.green,
-                                ),
-                                Income_Expense(
-                                  label: 'Expense',
-                                  amount: '$totalExpense',
-                                  color: const Color.fromARGB(255, 221, 78, 68),
-                                  shadow: Colors.red,
-                                ),
-                              ],
+              child: Obx(() {
+                _homecont.totaldata(_cont.transactionListNotifier);
+                return Column(
+                    // ignore: prefer_const_literals_to_create_immutables
+                    children: [
+                      ListCard(
+                        balance: '${_homecont.totalBalance}',
+                        height: height / 8,
+                        width: 90.w,
+                        color: Colors.white,
+                      ),
+                      const SizedBox(height: 10),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 10.0, right: 10),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          // ignore: prefer_const_literals_to_create_immutables
+                          children: [
+                            Income_Expense(
+                              label: 'Income',
+                              amount: '${_homecont.totalIncome}',
+                              color: Colors.green,
+                              shadow: Colors.green,
                             ),
-                          )
-                        ]);
-                  }),
+                            Income_Expense(
+                              label: 'Expense',
+                              amount: '${_homecont.totalExpense}',
+                              color: const Color.fromARGB(255, 221, 78, 68),
+                              shadow: Colors.red,
+                            ),
+                          ],
+                        ),
+                      )
+                    ]);
+              }),
             ),
             SizedBox(
               height: height * .03,
@@ -111,31 +92,5 @@ class _ScreenHomeState extends State<ScreenHome> {
         ),
       ),
     );
-  }
-
-  Future<void> getName() async {
-    final SharedPreferences pref = await SharedPreferences.getInstance();
-
-    usernameEntered = pref.getString('username');
-    setState(() {});
-  }
-
-  totaldata(List<TransactionModel> value) async {
-    totalBalance = 0;
-    totalIncome = 0;
-    totalExpense = 0;
-
-    for (TransactionModel data in value) {
-      if (data.category.type == CategoryType.income) {
-        totalIncome = totalIncome + data.amount;
-      }
-      if (data.category.type == CategoryType.expense) {
-        totalExpense = totalExpense + data.amount;
-      }
-    }
-    totalBalance = totalIncome - totalExpense;
-    if (totalBalance < 0) {
-      totalBalance = 0;
-    }
   }
 }

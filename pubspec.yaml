@@ -27,6 +27,7 @@ environment:
 # the latest version available on pub.dev. To see which dependencies have newer
 # versions available, run `flutter pub outdated`.
 dependencies:
+  get: 4.6.5
   blinking_text: ^1.0.2
   build_runner: ^2.1.10
   cupertino_icons: ^1.0.2
@@ -39,7 +40,7 @@ dependencies:
   flutter_slidable: ^1.2.0
   flutter_switch: ^0.3.2
   font_awesome_flutter: ^10.1.0
-  get: ^4.6.3
+  
   google_fonts: ^2.3.2
   hive_flutter: ^1.1.0
   hive_generator: ^1.1.2

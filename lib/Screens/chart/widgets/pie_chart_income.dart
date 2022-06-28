@@ -1,3 +1,4 @@
+import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:project_1_money_management/db/transaction_db.dart';
 import 'package:project_1_money_management/models/transactions_model.dart';
@@ -14,14 +15,15 @@ class IncomeChart extends StatefulWidget {
 }
 
 class _IncomeChartState extends State<IncomeChart> {
+  final TransactionDbFunctions _cont = Get.put(TransactionDbFunctions());
   @override
   Widget build(BuildContext context) {
     setState(() {
-      TransactionDB.instance.refresh();
+      _cont.refresh();
     });
 
     final List<Chartdata> newchart =
-        chartsort(TransactionDB.instance.incometransactionListNotifier.value);
+        chartsort(_cont.incometransactionListNotifier);
     return Column(
       children: [
         const SizedBox(
@@ -42,28 +44,21 @@ class _IncomeChartState extends State<IncomeChart> {
                     color: Color.fromARGB(255, 172, 167, 167),
                   )
                 ]),
-            child: ValueListenableBuilder(
-                valueListenable:
-                    TransactionDB.instance.incometransactionListNotifier,
-                builder: (BuildContext context, List<TransactionModel> list,
-                    Widget? _) {
-                  return SfCircularChart(
-                      legend: Legend(isVisible: true),
-                      title: ChartTitle(
-                          textStyle: GoogleFonts.inconsolata(
-                              color: Colors.white, fontSize: 20),
-                          text: 'Income Chart'),
-                      series: <DoughnutSeries>[
-                        // Render pie chart
-                        DoughnutSeries<Chartdata, String>(
-                            dataLabelSettings:
-                                const DataLabelSettings(isVisible: true),
-                            dataSource: newchart,
-                            xValueMapper: (Chartdata data, _) =>
-                                data.categories,
-                            yValueMapper: (Chartdata data, _) => data.amount)
-                      ]);
-                })),
+            child: SfCircularChart(
+                legend: Legend(isVisible: true),
+                title: ChartTitle(
+                    textStyle: GoogleFonts.inconsolata(
+                        color: Colors.white, fontSize: 20),
+                    text: 'Income Chart'),
+                series: <DoughnutSeries>[
+                  // Render pie chart
+                  DoughnutSeries<Chartdata, String>(
+                      dataLabelSettings:
+                          const DataLabelSettings(isVisible: true),
+                      dataSource: newchart,
+                      xValueMapper: (Chartdata data, _) => data.categories,
+                      yValueMapper: (Chartdata data, _) => data.amount)
+                ]))
       ],
     );
   }
@@ -176,7 +171,7 @@ class Chartdata {
 //   maps() {
 //     final List<DataMapModle> datamapList = [];
 //     for (var item
-//         in TransactionDB.instance.incometransactionListNotifier.value) {
+//         in _cont.incometransactionListNotifier.value) {
 //       datamapList.add(
 //         DataMapModle(
 //           amount: item.amount,

@@ -1,29 +1,60 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:project_1_money_management/db/category_db.dart';
 import 'package:top_snackbar_flutter/custom_snack_bar.dart';
+import 'package:top_snackbar_flutter/top_snack_bar.dart';
 
-import '../../../models/category_model.dart';
+import 'add_new.dart';
 
 class IncomeCategory extends StatelessWidget {
-  const IncomeCategory({Key? key}) : super(key: key);
-
+  IncomeCategory({Key? key}) : super(key: key);
+  final CategoryController _cont = Get.put(CategoryController());
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(8.0),
-      child: Container(
-        height: 100,
-        decoration: BoxDecoration(
-            color: const Color.fromARGB(255, 175, 171, 171),
-            borderRadius: BorderRadius.circular(20)),
-        child: ValueListenableBuilder(
-            valueListenable: CategoryDB().incomeCategoryList,
-            builder:
-                (BuildContext context, List<CategoryModel> newList, Widget? _) {
+      child: Column(
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              ElevatedButton.icon(
+                style: ElevatedButton.styleFrom(
+                  primary: const Color.fromARGB(
+                      255, 255, 251, 253), //change background color of button
+                  onPrimary: const Color.fromARGB(
+                      255, 2, 2, 2), //change text color of button
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  elevation: 0.0,
+                ),
+                onPressed: () {
+                  Get.to(AddNewCategory());
+                },
+                icon: const Icon(Icons.add),
+                label: AutoSizeText(
+                  'Add Category',
+                  maxLines: 2,
+                  style: GoogleFonts.inconsolata(),
+                ),
+              ),
+            ],
+          ),
+          Container(
+            height: 460,
+            decoration: BoxDecoration(
+                color: const Color.fromARGB(255, 175, 171, 171),
+                borderRadius: BorderRadius.circular(20)),
+            child: Obx(() {
+              WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+                _cont.refreshUI();
+              });
               return ListView.separated(
                   itemBuilder: (BuildContext context, index) {
-                    final category = newList[index];
+                    final category = _cont.incomeCategoryList[index];
                     return Padding(
                       padding: const EdgeInsets.only(
                           left: 30.0, right: 30, top: 8, bottom: 8),
@@ -48,7 +79,7 @@ class IncomeCategory extends StatelessWidget {
                           ),
                           trailing: IconButton(
                               onPressed: () {
-                                CategoryDB.instance.deleteCategory(category.id);
+                                _cont.deleteCategory(category.id);
                                 showTopSnackBar(
                                   context,
                                   const CustomSnackBar.error(
@@ -69,11 +100,11 @@ class IncomeCategory extends StatelessWidget {
                       height: 5,
                     );
                   },
-                  itemCount: newList.length);
+                  itemCount: _cont.incomeCategoryList.length);
             }),
+          ),
+        ],
       ),
     );
   }
-
-  void showTopSnackBar(BuildContext context, customSnackBar) {}
 }

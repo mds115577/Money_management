@@ -1,3 +1,4 @@
+import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:project_1_money_management/db/transaction_db.dart';
 import 'package:project_1_money_management/models/transactions_model.dart';
@@ -14,6 +15,7 @@ class PieChartsExpense extends StatefulWidget {
 }
 
 class _PieChartsExpenseState extends State<PieChartsExpense> {
+  final TransactionDbFunctions _cont = Get.put(TransactionDbFunctions());
   late TooltipBehavior _tooltipBehavior;
 
   @override
@@ -25,7 +27,7 @@ class _PieChartsExpenseState extends State<PieChartsExpense> {
   @override
   Widget build(BuildContext context) {
     final List<Chartdata> newChart =
-        chartsort(TransactionDB.instance.expennsetransactionListNotifier.value);
+        chartsort(_cont.expennsetransactionListNotifier.value);
     return Column(
       children: [
         const SizedBox(

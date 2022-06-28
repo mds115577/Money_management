@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:project_1_money_management/Screens/Chart/widgets/expense_tile.dart';
-import 'package:project_1_money_management/Screens/Chart/widgets/income_tile.dart';
+import 'package:project_1_money_management/screens/chart/widgets/income_tile.dart';
 
 class PieChart extends StatefulWidget {
   const PieChart({Key? key}) : super(key: key);
@@ -70,7 +70,7 @@ class _PieChartState extends State<PieChart>
                 child: TabBarView(
               controller: tabController,
               children: [
-                IncomeTile(),
+                IncomeTiles(),
                 ExpenseTile(),
               ],
             ))

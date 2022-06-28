@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:project_1_money_management/Screens/Chart/widgets/pie_charts_expense.dart';
+import 'package:project_1_money_management/db/transaction_db.dart';
 import 'package:project_1_money_management/screens/chart/widgets/view_expense.dart';
-
-import '../../../db/transaction_db.dart';
-import '../../../models/transactions_model.dart';
 
 // ignore: must_be_immutable
 class ExpenseTile extends StatelessWidget {
   ExpenseTile({Key? key}) : super(key: key);
+  final TransactionDbFunctions _cont = Get.put(TransactionDbFunctions());
   String cdate = DateFormat("dd\nMMM").format(DateTime.now());
   @override
   Widget build(BuildContext context) {
@@ -41,7 +41,7 @@ class ExpenseTile extends StatelessWidget {
                       backgroundColor: MaterialStateProperty.all(Colors.white)),
                   onPressed: () {
                     Navigator.of(context).push(MaterialPageRoute(
-                        builder: (route) => const ViewAllexpense()));
+                        builder: (route) => ViewAllexpense()));
                   },
                   label: Text(
                     'View All',
@@ -57,54 +57,49 @@ class ExpenseTile extends StatelessWidget {
             ),
           ],
         ),
-        ValueListenableBuilder(
-            valueListenable:
-                TransactionDB.instance.expennsetransactionListNotifier,
-            builder: (BuildContext context, List<TransactionModel> lists,
-                Widget? _) {
-              return Expanded(
-                child: ListView.separated(
-                    itemBuilder: (BuildContext context, index) {
-                      final value = lists[index];
-                      return Card(
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(20)),
-                          child: ListTile(
-                            leading: CircleAvatar(
-                                radius: 30,
-                                backgroundColor: Colors.red,
-                                child: Text(
-                                  parseDate(value.date),
-                                  style: GoogleFonts.inconsolata(
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.w600),
-                                )),
-                            title: Text(
-                              '${value.amount}',
+        Obx(() {
+          return Expanded(
+            child: ListView.separated(
+                itemBuilder: (BuildContext context, index) {
+                  final value = _cont.expennsetransactionListNotifier[index];
+                  return Card(
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20)),
+                      child: ListTile(
+                        leading: CircleAvatar(
+                            radius: 30,
+                            backgroundColor: Colors.red,
+                            child: Text(
+                              parseDate(value.date),
                               style: GoogleFonts.inconsolata(
-                                  fontSize: 20, fontWeight: FontWeight.w600),
-                            ),
-                            subtitle: Text(
-                              value.category.name,
-                              style: GoogleFonts.inconsolata(
+                                  color: Colors.white,
                                   fontWeight: FontWeight.w600),
-                            ),
-                            trailing: Text(
-                              'Expense',
-                              style: GoogleFonts.inconsolata(
-                                  color:
-                                      const Color.fromARGB(255, 172, 62, 62)),
-                            ),
-                          ));
-                    },
-                    separatorBuilder: (BuildContext context, index) {
-                      return const SizedBox(
-                        height: 5,
-                      );
-                    },
-                    itemCount: lists.length),
-              );
-            }),
+                            )),
+                        title: Text(
+                          '${value.amount}',
+                          style: GoogleFonts.inconsolata(
+                              fontSize: 20, fontWeight: FontWeight.w600),
+                        ),
+                        subtitle: Text(
+                          value.category.name,
+                          style: GoogleFonts.inconsolata(
+                              fontWeight: FontWeight.w600),
+                        ),
+                        trailing: Text(
+                          'Expense',
+                          style: GoogleFonts.inconsolata(
+                              color: const Color.fromARGB(255, 172, 62, 62)),
+                        ),
+                      ));
+                },
+                separatorBuilder: (BuildContext context, index) {
+                  return const SizedBox(
+                    height: 5,
+                  );
+                },
+                itemCount: _cont.expennsetransactionListNotifier.length),
+          );
+        }),
       ],
     );
   }

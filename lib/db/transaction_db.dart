@@ -1,4 +1,4 @@
-import 'package:flutter/cupertino.dart';
+import 'package:get/get.dart';
 //import 'package:flutter/foundation.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:project_1_money_management/Screens/Adding_items/Widgets/date_picker.dart';
@@ -9,61 +9,54 @@ import '../models/transactions_model.dart';
 // ignore: constant_identifier_names
 const TRANSACTION_DB_NAME = 'transaction-db';
 
-abstract class TransactionDbFunctions {
-  Future<void> addTransaction(TransactionModel obj);
-  Future<List<TransactionModel>> getAllTransactions();
-  Future<void> deleteTransactions(String id);
-  Future<void> updateTransact(TransactionModel value);
-  Future<void> transClear();
-  Future<void> filterList(String selected);
-}
+class TransactionDbFunctions extends GetxController {
+  // Future<void> addTransaction(TransactionModel obj);
+  // Future<List<TransactionModel>> getAllTransactions();
+  // Future<void> deleteTransactions(String id);
+  // Future<void> updateTransact(TransactionModel value);
+  // Future<void> transClear();
+  // Future<void> filterList(String selected);
 
-class TransactionDB implements TransactionDbFunctions {
-  TransactionDB.internal();
-  static TransactionDB instance = TransactionDB.internal();
-  factory TransactionDB() {
-    return instance;
-  }
-  ValueNotifier<List<TransactionModel>> transactionListNotifier =
-      ValueNotifier([]);
-  ValueNotifier<List<TransactionModel>> incometransactionListNotifier =
-      ValueNotifier([]);
-  ValueNotifier<List<TransactionModel>> expennsetransactionListNotifier =
-      ValueNotifier([]);
-  ValueNotifier<List<TransactionModel>> filterListNotifier = ValueNotifier([]);
-  ValueNotifier<List<TransactionModel>> incomeFilterlist = ValueNotifier([]);
-  ValueNotifier<List<TransactionModel>> expenseFilterlist = ValueNotifier([]);
+// class TransactionDB implements TransactionDbFunctions {
+//   TransactionDB.internal();
+//   static TransactionDB instance = TransactionDB.internal();
+//   factory TransactionDB() {
+//     return instance;
+//   }
+  RxList<TransactionModel> transactionListNotifier = <TransactionModel>[].obs;
+  RxList<TransactionModel> incometransactionListNotifier =
+      <TransactionModel>[].obs;
+  RxList<TransactionModel> expennsetransactionListNotifier =
+      <TransactionModel>[].obs;
+  RxList<TransactionModel> filterListNotifier = <TransactionModel>[].obs;
+  RxList<TransactionModel> incomeFilterlist = <TransactionModel>[].obs;
+  RxList<TransactionModel> expenseFilterlist = <TransactionModel>[].obs;
   @override
   Future<void> addTransaction(TransactionModel obj) async {
     final db = await Hive.openBox<TransactionModel>(TRANSACTION_DB_NAME);
     db.put(obj.id, obj);
   }
 
+  @override
   Future<void> refresh() async {
     final _alltransaction = await getAllTransactions();
     _alltransaction.sort((first, second) => second.date.compareTo(first.date));
 
-    expennsetransactionListNotifier.value.clear();
-    incometransactionListNotifier.value.clear();
-    transactionListNotifier.value.clear();
+    expennsetransactionListNotifier.clear();
+    incometransactionListNotifier.clear();
+    transactionListNotifier.clear();
     Future.forEach(
       _alltransaction,
       (TransactionModel transaction) {
         if (transaction.type == CategoryType.income) {
-          incometransactionListNotifier.value.add(transaction);
+          incometransactionListNotifier.add(transaction);
         } else {
-          expennsetransactionListNotifier.value.add(transaction);
+          expennsetransactionListNotifier.add(transaction);
         }
       },
     );
-    filterListNotifier.notifyListeners();
-    transactionListNotifier.value.addAll(_alltransaction);
-    // ignore: invalid_use_of_visible_for_testing_member, invalid_use_of_protected_member
-    transactionListNotifier.notifyListeners();
-    // ignore: invalid_use_of_visible_for_testing_member, invalid_use_of_protected_member
-    incometransactionListNotifier.notifyListeners();
-    // ignore: invalid_use_of_visible_for_testing_member, invalid_use_of_protected_member
-    expennsetransactionListNotifier.notifyListeners();
+
+    transactionListNotifier.addAll(_alltransaction);
   }
 
   @override
@@ -84,7 +77,7 @@ class TransactionDB implements TransactionDbFunctions {
   Future<void> updateTransact(TransactionModel value) async {
     final db = await Hive.openBox<TransactionModel>(TRANSACTION_DB_NAME);
     db.put(value.id, value);
-    transactionListNotifier.value.clear();
+    transactionListNotifier.clear();
     refresh();
   }
 
@@ -107,74 +100,69 @@ class TransactionDB implements TransactionDbFunctions {
     } else if (selected == 'Month') {
       return sortedMonth(today);
     }
+    update();
   }
 
   Future<void> sortedList(DateTime _selected) async {
-    incomeFilterlist.value.clear();
-    expenseFilterlist.value.clear();
-    filterListNotifier.value.clear();
-    for (TransactionModel data in transactionListNotifier.value) {
+    incomeFilterlist.clear();
+    expenseFilterlist.clear();
+    filterListNotifier.clear();
+    for (TransactionModel data in transactionListNotifier) {
       if (data.date.day == _selected.day &&
           data.date.month == selected!.month &&
           data.type == CategoryType.income) {
-        incomeFilterlist.value.add(data);
-        filterListNotifier.value.add(data);
+        incomeFilterlist.add(data);
+        filterListNotifier.add(data);
+
         // ignore: invalid_use_of_visible_for_testing_member, invalid_use_of_protected_member
-        filterListNotifier.notifyListeners();
-        incomeFilterlist.notifyListeners();
+
       } else if (data.date.day == _selected.day &&
           data.date.month == selected!.month &&
           data.type == CategoryType.expense) {
-        expenseFilterlist.value.add(data);
+        expenseFilterlist.add(data);
 
-        filterListNotifier.value.add(data);
-        filterListNotifier.notifyListeners();
-        expenseFilterlist.notifyListeners();
+        filterListNotifier.add(data);
       }
+      update();
     }
   }
 
   sortedMonth(DateTime _selected) async {
-    incomeFilterlist.value.clear();
-    expenseFilterlist.value.clear();
-    filterListNotifier.value.clear();
-    for (TransactionModel datas in transactionListNotifier.value) {
+    incomeFilterlist.clear();
+    expenseFilterlist.clear();
+    filterListNotifier.clear();
+    for (TransactionModel datas in transactionListNotifier) {
       if (datas.date.month == _selected.month &&
           datas.category.type == CategoryType.income) {
-        incomeFilterlist.value.add(datas);
-        filterListNotifier.value.add(datas);
-        // ignore: invalid_use_of_visible_for_testing_member, invalid_use_of_protected_member
-        incomeFilterlist.notifyListeners();
-        // ignore: invalid_use_of_visible_for_testing_member, invalid_use_of_protected_member
-        filterListNotifier.notifyListeners();
+        incomeFilterlist.add(datas);
+        filterListNotifier.add(datas);
       } else {
-        expenseFilterlist.value.add(datas);
-        filterListNotifier.value.add(datas);
-        filterListNotifier.notifyListeners();
-        expenseFilterlist.notifyListeners();
+        expenseFilterlist.add(datas);
+        filterListNotifier.add(datas);
       }
     }
+    update();
   }
 
   sortedCustom(DateTime startDate, DateTime endDate) async {
-    incomeFilterlist.value.clear();
-    expenseFilterlist.value.clear();
-    filterListNotifier.value.clear();
-    for (TransactionModel data in transactionListNotifier.value) {
+    incomeFilterlist.clear();
+    expenseFilterlist.clear();
+    filterListNotifier.clear();
+    for (TransactionModel data in transactionListNotifier) {
       if (data.date.day >= startDate.day &&
           data.date.day <= endDate.day &&
           data.date.month >= startDate.month &&
           data.date.month <= endDate.month &&
           data.category.type == CategoryType.income) {
-        incomeFilterlist.value.add(data);
-        filterListNotifier.value.add(data);
+        incomeFilterlist.add(data);
+        filterListNotifier.add(data);
       } else if (data.date.day >= startDate.day &&
           data.date.day <= endDate.day &&
           data.date.month >= startDate.month &&
           data.date.month <= endDate.month &&
           data.category.type == CategoryType.expense) {
-        expenseFilterlist.value.add(data);
-        filterListNotifier.value.add(data);
+        expenseFilterlist.add(data);
+        filterListNotifier.add(data);
       }
     }
   }

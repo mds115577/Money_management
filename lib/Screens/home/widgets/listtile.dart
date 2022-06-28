@@ -1,11 +1,13 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
-import 'package:project_1_money_management/Screens/Home/Widgets/view_all.dart';
 import 'package:project_1_money_management/db/transaction_db.dart';
 import 'package:project_1_money_management/models/category_model.dart';
+import 'package:project_1_money_management/refactors/bottom_bar.dart';
+import 'package:project_1_money_management/screens/home/widgets/view_all.dart';
 import 'package:project_1_money_management/view/view_data.dart';
 import 'package:sizer/sizer.dart';
 import 'package:top_snackbar_flutter/custom_snack_bar.dart';
@@ -14,27 +16,18 @@ import '../../../models/transactions_model.dart';
 import '../../../update/update.dart';
 
 // ignore: must_be_immutable
-class ListItems extends StatefulWidget {
+class ListItems extends StatelessWidget {
   ListItems({Key? key}) : super(key: key);
   Object? val;
-  @override
-  State<ListItems> createState() => _ListItemsState();
-}
 
-TransactionModel? dat;
-DateTime? selecteds = DateTime.now();
+  TransactionModel? dat;
+  DateTime? selecteds = DateTime.now();
 
-class _ListItemsState extends State<ListItems> {
-  List<String> items = ['All', 'Today', 'Yesterday', 'Month', 'Custom'];
-  @override
-  void initState() {
-    super.initState();
-  }
+  final TransactionDbFunctions _cont = Get.put(TransactionDbFunctions());
 
-  String dropdownValue = 'All';
   @override
   Widget build(BuildContext context) {
-    TransactionDB.instance.refresh();
+    _cont.refresh();
     return Expanded(
       child: Column(
         children: [
@@ -59,8 +52,8 @@ class _ListItemsState extends State<ListItems> {
                         backgroundColor:
                             MaterialStateProperty.all(Colors.white)),
                     onPressed: () {
-                      Navigator.of(context).push(MaterialPageRoute(
-                          builder: (route) => const ViewAll()));
+                      Navigator.of(context).push(
+                          MaterialPageRoute(builder: (route) => ViewAlls()));
                     },
                     label: AutoSizeText(
                       'View All',
@@ -88,7 +81,7 @@ class _ListItemsState extends State<ListItems> {
               //             if (dropdownValue == 'Custom') {
               //               _selectDate(context);
               //             }
-              //             TransactionDB.instance
+              //             _cont
               //                 .filterList(dropdownValue, selecteds!);
               //           },
               //         );
@@ -104,115 +97,111 @@ class _ListItemsState extends State<ListItems> {
               // )
             ],
           ),
-          ValueListenableBuilder(
-              valueListenable: TransactionDB.instance.transactionListNotifier,
-              builder: (BuildContext context, List<TransactionModel> newList,
-                  Widget? _) {
-                return Expanded(
-                  child: ListView.separated(
-                      shrinkWrap: true,
-                      itemBuilder: (BuildContext context, index) {
-                        final value = newList[index];
+          Obx(() {
+            return Expanded(
+              child: ListView.separated(
+                  shrinkWrap: true,
+                  itemBuilder: (BuildContext context, index) {
+                    final value = _cont.transactionListNotifier[index];
 
-                        return Slidable(
-                          key: Key(value.id!),
-                          startActionPane: ActionPane(
-                              motion: const DrawerMotion(),
-                              children: [
-                                SlidableAction(
-                                  spacing: 6,
-                                  backgroundColor: Colors.red,
-                                  onPressed: (ctx) {
-                                    TransactionDB.instance
-                                        .deleteTransactions(value.id!);
-                                    showTopSnackBar(
-                                      context,
-                                      const CustomSnackBar.error(
-                                        message: "Data Deleted Succesfully",
-                                      ),
-                                    );
-                                  },
-                                  icon: Icons.delete,
-                                  label: 'Delete',
-                                ),
-                                SlidableAction(
-                                  spacing: 6,
-                                  backgroundColor:
-                                      const Color.fromARGB(255, 28, 114, 158),
-                                  onPressed: (ctx) {
-                                    Navigator.of(context)
-                                        .push(MaterialPageRoute(
-                                            builder: (route) => UpdateScreen(
-                                                  value: value,
-                                                )));
-                                  },
-                                  icon: Icons.edit,
-                                  label: 'Edit',
-                                ),
-                              ]),
-                          child: Card(
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(10)),
-                              child: ListTile(
-                                onTap: (() {
-                                  Navigator.of(context).push(MaterialPageRoute(
-                                      builder: (route) => ViewScreen(
-                                            value: value,
-                                          )));
-                                }),
-                                leading: CircleAvatar(
-                                    radius: 8.w,
-                                    backgroundColor:
-                                        value.type == CategoryType.income
-                                            ? Colors.green
-                                            : Colors.red,
-                                    child: Text(
-                                      parseDate(value.date),
-                                      style: GoogleFonts.inconsolata(
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.w600),
-                                    )),
-                                title: Text(
-                                  '${value.amount}',
-                                  style: GoogleFonts.inconsolata(
-                                      fontSize: 17.sp,
-                                      fontWeight: FontWeight.w600),
-                                ),
-                                subtitle: Text(
-                                  value.category.name,
-                                  style: GoogleFonts.inconsolata(
-                                      fontWeight: FontWeight.w600),
-                                ),
-                                trailing: Wrap(
-                                  children: [
+                    return Slidable(
+                      key: Key(value.id!),
+                      startActionPane:
+                          ActionPane(motion: const DrawerMotion(), children: [
+                        SlidableAction(
+                          spacing: 6,
+                          backgroundColor: Colors.red,
+                          onPressed: (ctx) async {
+                            await _cont.deleteTransactions(value.id!);
+                            Get.offAll(ScreenNavigation());
+                            showTopSnackBar(
+                              context,
+                              const CustomSnackBar.error(
+                                message: "Data Deleted Succesfully",
+                              ),
+                            );
+                          },
+                          icon: Icons.delete,
+                          label: 'Delete',
+                        ),
+                        SlidableAction(
+                          spacing: 6,
+                          backgroundColor:
+                              const Color.fromARGB(255, 28, 114, 158),
+                          onPressed: (ctx) {
+                            Navigator.of(context).push(MaterialPageRoute(
+                                builder: (route) => UpdateScreen(
+                                      value: value,
+                                    )));
+                          },
+                          icon: Icons.edit,
+                          label: 'Edit',
+                        ),
+                      ]),
+                      child: Card(
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10)),
+                          child: ListTile(
+                            onTap: (() {
+                              Navigator.of(context).push(MaterialPageRoute(
+                                  builder: (route) => ViewScreen(
+                                        value: value,
+                                      )));
+                            }),
+                            leading: CircleAvatar(
+                                radius: 8.w,
+                                backgroundColor:
                                     value.type == CategoryType.income
-                                        ? Text(
-                                            'Income',
-                                            style: GoogleFonts.inconsolata(
-                                                color: const Color.fromARGB(
-                                                    255, 31, 233, 38),
-                                                fontWeight: FontWeight.bold),
-                                          )
-                                        : Text(
-                                            'Expense',
-                                            style: GoogleFonts.inconsolata(
-                                                color: const Color.fromARGB(
-                                                    255, 255, 7, 7),
-                                                fontWeight: FontWeight.bold),
-                                          )
-                                  ],
-                                ),
-                              )),
-                        );
-                      },
-                      separatorBuilder: (BuildContext context, index) {
-                        return const SizedBox(
-                          height: 5,
-                        );
-                      },
-                      itemCount: newList.length < 4 ? newList.length : 4),
-                );
-              })
+                                        ? Colors.green
+                                        : Colors.red,
+                                child: Text(
+                                  parseDate(value.date),
+                                  style: GoogleFonts.inconsolata(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.w600),
+                                )),
+                            title: Text(
+                              '${value.amount}',
+                              style: GoogleFonts.inconsolata(
+                                  fontSize: 17.sp, fontWeight: FontWeight.w600),
+                            ),
+                            subtitle: Text(
+                              value.category.name,
+                              style: GoogleFonts.inconsolata(
+                                  fontWeight: FontWeight.w600),
+                            ),
+                            trailing: Wrap(
+                              children: [
+                                value.type == CategoryType.income
+                                    ? Text(
+                                        'Income',
+                                        style: GoogleFonts.inconsolata(
+                                            color: const Color.fromARGB(
+                                                255, 31, 233, 38),
+                                            fontWeight: FontWeight.bold),
+                                      )
+                                    : Text(
+                                        'Expense',
+                                        style: GoogleFonts.inconsolata(
+                                            color: const Color.fromARGB(
+                                                255, 255, 7, 7),
+                                            fontWeight: FontWeight.bold),
+                                      )
+                              ],
+                            ),
+                          )),
+                    );
+                  },
+                  separatorBuilder: (BuildContext context, index) {
+                    return const SizedBox(
+                      height: 5,
+                    );
+                  },
+                  itemCount: _cont.transactionListNotifier.length < 4
+                      ? _cont.transactionListNotifier.length
+                      : 4),
+            );
+          })
         ],
       ),
     );
