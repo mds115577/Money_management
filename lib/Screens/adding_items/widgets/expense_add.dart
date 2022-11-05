@@ -3,12 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import 'package:google_fonts/google_fonts.dart';
+import 'package:project_1_money_management/Screens/Category/Widgets/add_new.dart';
 
 import 'package:project_1_money_management/db/category_db.dart';
 import 'package:project_1_money_management/db/transaction_db.dart';
 import 'package:project_1_money_management/models/category_model.dart';
 import 'package:project_1_money_management/screens/adding_items/controller/add_item_controller.dart';
-import 'package:project_1_money_management/screens/category/view/categories.dart';
 
 CategoryModel? selectedCategoryModel2;
 
@@ -53,26 +53,25 @@ class ExpenseAdd extends StatelessWidget {
                     children: [
                       Column(
                         children: [
-                          ElevatedButton.icon(
-                              style: ElevatedButton.styleFrom(
-                                primary: const Color.fromARGB(255, 255, 251,
-                                    253), //change background color of button
-                                onPrimary: const Color.fromARGB(255, 56, 120,
-                                    204), //change text color of button
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(15),
+                          GetBuilder<AddItemController>(builder: (contexts) {
+                            return ElevatedButton.icon(
+                                style: ElevatedButton.styleFrom(
+                                  primary: const Color.fromARGB(255, 255, 251,
+                                      253), //change background color of button
+                                  onPrimary: const Color.fromARGB(255, 56, 120,
+                                      204), //change text color of button
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(15),
+                                  ),
+                                  elevation: 15.0,
                                 ),
-                                elevation: 15.0,
-                              ),
-                              onPressed: () {
-                                _addcont.selectDate(context);
-                              },
-                              icon: const Icon(Icons.calendar_month),
-                              label: GetBuilder<AddItemController>(
-                                  builder: (controller) {
-                                return Text(
-                                    '${_addcont.selectedDate.day}/${_addcont.selectedDate.month}/${_addcont.selectedDate.year}');
-                              }))
+                                onPressed: () {
+                                  _addcont.selectDate(context);
+                                },
+                                icon: const Icon(Icons.calendar_month),
+                                label: Text(
+                                    '${_addcont.selectedDate.day}/${_addcont.selectedDate.month}/${_addcont.selectedDate.year}'));
+                          })
                         ],
                       ),
                       const SizedBox(
@@ -132,7 +131,7 @@ class ExpenseAdd extends StatelessWidget {
                                     elevation: 0.0,
                                   ),
                                   onPressed: () {
-                                    Get.to(AddCategory());
+                                    Get.to(AddNewCategory());
                                   },
                                   icon: const Icon(Icons.add),
                                   label: AutoSizeText(

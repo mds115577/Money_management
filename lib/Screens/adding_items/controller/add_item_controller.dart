@@ -155,12 +155,12 @@ class AddItemController extends GetxController {
       amount: parsedtext,
       purpose: purposeText,
       category: selectedCategoryModel!,
-      date: selected!,
+      date: selected2!,
       type: CategoryType.income,
       id: DateTime.now().microsecondsSinceEpoch.toString(),
     );
     await _cont.addTransaction(model);
-    print("ADDED");
+
     purposeTextEditingController.clear();
     amountTextEditingController.clear();
     Get.offAll(ScreenNavigation());

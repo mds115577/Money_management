@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:project_1_money_management/db/transaction_db.dart';
 import 'package:project_1_money_management/models/category_model.dart';
-import 'package:project_1_money_management/screens/home/home_screen.dart';
+import 'package:project_1_money_management/refactors/bottom_bar.dart';
 import 'package:top_snackbar_flutter/custom_snack_bar.dart';
 import 'package:top_snackbar_flutter/top_snack_bar.dart';
 
@@ -40,7 +40,7 @@ class UpdateController extends GetxController {
         message: "Date Updated Succesfully",
       ),
     );
-    await Get.off(ScreenHomes());
+    await Get.offAll(ScreenNavigation());
   }
 
   selectDates(BuildContext context) async {

@@ -2,6 +2,7 @@ import 'package:get/get.dart';
 //import 'package:flutter/foundation.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:project_1_money_management/Screens/Adding_items/Widgets/date_picker.dart';
+import 'package:project_1_money_management/screens/adding_items/controller/add_item_controller.dart';
 
 import '../models/category_model.dart';
 import '../models/transactions_model.dart';

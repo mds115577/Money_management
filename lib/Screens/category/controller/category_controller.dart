@@ -42,7 +42,7 @@ class CategoryAddController extends GetxController {
         );
       }
     }
-
+        
     final category =
         CategoryModel(id: DateTime.now().toString(), name: name, type: type);
 
