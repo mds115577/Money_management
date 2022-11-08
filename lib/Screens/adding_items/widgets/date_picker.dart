@@ -17,7 +17,7 @@ class _DatePickState extends State<DatePick> {
       children: [
         ElevatedButton.icon(
             style: ElevatedButton.styleFrom(
-              primary: const Color.fromARGB(
+              backgroundColor: const Color.fromARGB(
                   255, 255, 251, 253), //change background color of button
               onPrimary: const Color.fromARGB(
                   255, 56, 120, 204), //change text color of button
